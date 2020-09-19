@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 
-// interface TProduct{
-//   input1: number,
-//   input2: number,
-//   input3: number
-// }
-
 type TInput = {
   input1: any,
   input2: any,
@@ -20,17 +14,14 @@ type TCheck = {
 };
 
 function App() {
-  // const [input1, setInput1] = useState(0);
-  // const [input2, setInput2] = useState(0);
-  // const [input3, setInput3] = useState(0);
   const [result, setResult] = useState(0);
   const [error, setError] = useState("");
   const [numbers, setNumbers] = React.useState<TInput>({input1: 0, input2: 0, input3: 0 });
   const [checkbox, setCheck] = React.useState<TCheck>({check1: false, check2: false, check3: false });
 
   const calculating = (type: string) => {
-    const valCheck = Object.values(checkbox)
-    const valNumber = Object.values(numbers)
+    const valCheck:string[] = Object.values(checkbox)
+    const valNumber:string[] = Object.values(numbers)
     let temp:string[] = []
     valCheck.forEach((val,idx) => {
       if (val) {
@@ -38,7 +29,6 @@ function App() {
       }
     })
     if(temp.length > 1){
-      console.log('temp', temp)
       const operand = () => {
         if(type === 'addition') {
           return temp.reduce((product, n) => product + n)
@@ -46,7 +36,6 @@ function App() {
           let dev = Number(temp[0]) - Number(temp[1])
           temp.forEach((t, i) => {
             if(i > 1){ 
-              console.log(dev, t)
               dev = dev - Number(t)
             }
           })
@@ -57,7 +46,6 @@ function App() {
           let dev = Number(temp[0]) / Number(temp[1])
           temp.forEach((t, i) => {
             if(i > 1){ 
-              console.log(dev, t)
               dev = dev / Number(t)
             }
           })
@@ -66,47 +54,45 @@ function App() {
       }
       const oper = operand()
       setResult(Number(oper))
-      console.log('operand()', operand())
+      error && setError('')
       return operand()
     } else {
-     setError('error')
+     setError('error: please check min 2 input')
      return 0
     }
   }
     
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('e.target.value', e.target.value)
     const newValue = e.target.validity.valid ? e.target.value : numbers.input1;
     setNumbers({...numbers, [e.target.name]: Number(newValue)})
   }
 
   const onChangeCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('e.target.checked', e.target.checked)
     setCheck({...checkbox, [e.target.name]: e.target.checked})
   }
   
   return (
     <div className="App">
       <div className="row">
-        <input pattern="[0-9]*" name="input1" onChange={onChange} value={numbers.input1}/>
-        <input type="checkbox" name="check1" onChange={onChangeCheckbox} checked={checkbox.check1} />
+        <input pattern="[0-9]*" aria-label="input1" name="input1" onChange={onChange} value={numbers.input1}/>
+        <input type="checkbox" aria-label="check1" name="check1" onChange={onChangeCheckbox} checked={checkbox.check1} />
       </div>
       <div className="row">
-        <input pattern="[0-9]*" name="input2" onChange={onChange} value={numbers.input2}/>
-        <input type="checkbox" name="check2" onChange={onChangeCheckbox} checked={checkbox.check2} />
+        <input pattern="[0-9]*" aria-label="input2" name="input2" onChange={onChange} value={numbers.input2}/>
+        <input type="checkbox" aria-label="check2" name="check2" onChange={onChangeCheckbox} checked={checkbox.check2} />
       </div>
       <div className="row">
-        <input pattern="[0-9]*" name="input3" onChange={onChange} value={numbers.input3}/>
-        <input type="checkbox" name="check3" onChange={onChangeCheckbox} checked={checkbox.check3}/>
+        <input pattern="[0-9]*" aria-label="input3" name="input3" onChange={onChange} value={numbers.input3}/>
+        <input type="checkbox" aria-label="check3" name="check3" onChange={onChangeCheckbox} checked={checkbox.check3}/>
       </div>
       <div className="row">
-        <button onClick={() => calculating('addition')}>+</button>
+        <button aria-label="addition" onClick={() => calculating('addition')}>+</button>
         <button onClick={() => calculating('subtraction')}>-</button>
         <button onClick={() => calculating('multiplication')}>x</button>
         <button onClick={() => calculating('division')}>/</button>
       </div>
       {error}
-      <div className="row">Hasil: {result}</div>
+      <div className="row">Hasil: <div id="print_result">{result}</div></div>
     </div>
   );
 }
